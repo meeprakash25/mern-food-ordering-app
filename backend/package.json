@@ -1,0 +1,30 @@
+{
+  "name": "mern-food-ordering-app-backend",
+  "version": "1.0.0",
+  "main": "./src/index.ts",
+  "scripts": {
+    "dev": "dotenv -e .env.local -- nodemon",
+    "build": "npm install --include=dev && npx tsc",
+    "start": "node ./dist/index.js"
+  },
+  "author": "mee.prakash25@gmail.com",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-oauth2-jwt-bearer": "^1.7.1",
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.10.1",
+    "dotenv-cli": "^11.0.0",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
