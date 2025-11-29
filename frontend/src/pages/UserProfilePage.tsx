@@ -10,7 +10,7 @@ const UserProfilePage = () => {
   if (!currentUser) {
     return <span>Unable to load current user</span>
   }
-  return <UserProfileForm onSave={updateUser} isLoading={isGetLoading} currentUser={currentUser} />
+  return <UserProfileForm onSave={updateUser} isLoading={isUpdateLoading} currentUser={currentUser} />
 }
 
 export default UserProfilePage
