@@ -22,10 +22,10 @@ export async function auth(req: Request, res: Response, next: NextFunction) {
   }
 
   // Skip user lookup and decoding for POST /api/user
-  if (req.method === "POST" && req.path === "/" && req.baseUrl.endsWith("/api/user")) {
+  if (req.method === "POST" && req.baseUrl.endsWith("/api/user")) {
     return jwtCheck(req, res, next)
   }
-  
+
   const token = authorization.split(" ")[1]
 
   try {

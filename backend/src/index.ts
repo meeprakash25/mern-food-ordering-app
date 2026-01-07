@@ -4,7 +4,15 @@ import "dotenv/config"
 import mongoose from "mongoose"
 import { errorHandler } from "./middleware/errorHandler"
 import UserRoute from "./routes/UserRoute"
+import RestaurantRoute from "./routes/RestaurantRoute"
 import path from "path"
+import { v2 as cloudinary } from "cloudinary"
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME as string,
+  api_key: process.env.CLOUDINARY_API_KEY as string,
+  api_secret: process.env.CLOUDINARY_API_SECRET as string,
+})
 
 mongoose
   .connect(process.env.MONGODB_CONNECTION_STRING as string)
@@ -19,12 +27,13 @@ app.use(
 )
 
 app.use("/api/user", UserRoute)
+app.use("/api/restaurant", RestaurantRoute)
 
 app.use(errorHandler)
 
 app.use(express.static(path.join(__dirname, "../../frontend/dist")))
 
-app.use((req: Request, res: Response) => {
+app.use((_: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"))
 })
 
