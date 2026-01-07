@@ -31,12 +31,22 @@ app.use("/api/restaurant", RestaurantRoute)
 
 app.use(errorHandler)
 
+// not necessary for vercel
 app.use(express.static(path.join(__dirname, "../../frontend/dist")))
 
 app.use((_: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"))
 })
 
+// Health check endpoint
+app.get("/api/health", (_req: Request, res: Response) => {
+  res.json({ status: "ok" })
+})
+
+// Export for serverless platforms (Vercel, Netlify, AWS Lambda)
+export default app
+
+// For local development
 const PORT = process.env.PORT || 8000
 app.listen(PORT, () => {
   console.log(`Server started on port: ${PORT}`)

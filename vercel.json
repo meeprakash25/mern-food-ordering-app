@@ -20,7 +20,20 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/backend/src/index.ts"
+      "destination": "/frontend/dist/$1"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/backend/src/index.ts"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/dist/index.html"
     }
   ]
 }
