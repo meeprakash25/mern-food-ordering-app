@@ -4,7 +4,7 @@ import ManageRestaurantForm from "@/forms/manage-restaurant-form/ManageRestauran
 const ManageRestaurantPage = () => {
   const { createUserRestaurant, isPending: isCreatePending } = useCreateUserRestaurant()
   const { updateUserRestaurant, isPending: isUpdatePending } = useUpdateUserRestaurant()
-  const { userRestaurant, isPending: isFetchPending } = useGetUserRestaurant()
+  const { userRestaurant } = useGetUserRestaurant()
 
   const isEditing = !!userRestaurant?.data
 
