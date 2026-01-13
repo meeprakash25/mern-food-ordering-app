@@ -15,13 +15,20 @@ const UsernameMenu = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
+          <Link to="/manage-restaurant" className="font-bold hover:text-amber-600">
+            Manage Restaurant
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
           <Link to="/user-profile" className="font-bold hover:text-amber-600">
             User Profile
           </Link>
         </DropdownMenuItem>
         <Separator />
         <DropdownMenuItem>
-          <Button onClick={() => logout()} className="flex flex-1 font-bold bg-amber-600 hover:bg-amber-700 transition-all">
+          <Button
+            onClick={() => logout()}
+            className="flex flex-1 font-bold bg-amber-600 hover:bg-amber-700 transition-all">
             Log Out
           </Button>
         </DropdownMenuItem>

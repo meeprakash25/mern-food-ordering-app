@@ -20,6 +20,7 @@ mongoose
 
 const app = express()
 app.use(express.json())
+// app.use(express.urlencoded({ extended: true }))
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:5173",
@@ -27,7 +28,7 @@ app.use(
 )
 
 app.use("/api/user", UserRoute)
-app.use("/api/restaurant", RestaurantRoute)
+app.use("/api/user/restaurant", RestaurantRoute)
 
 app.use(errorHandler)
 
@@ -40,7 +41,7 @@ app.use((_: Request, res: Response) => {
 
 // Health check endpoint
 app.get("/api/health", (_req: Request, res: Response) => {
-  res.json({ status: "ok" })
+  return res.status(500).json({ status: "ok" })
 })
 
 // Export for serverless platforms (Vercel, Netlify, AWS Lambda)

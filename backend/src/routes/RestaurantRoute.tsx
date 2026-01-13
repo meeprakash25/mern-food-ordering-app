@@ -14,6 +14,9 @@ const upload = multer({
   },
 })
 
-router.post("/", auth, validateRestaurantRequest, upload.single("imageFile"), RestaurantController.createRestaurant)
+router.get("/", auth, RestaurantController.getUserRestaurant)
+
+router.post("/", auth, upload.single("imageFile"), validateRestaurantRequest, RestaurantController.createRestaurant)
+router.put("/", auth, upload.single("imageFile"), validateRestaurantRequest, RestaurantController.updateRestaurant)
 
 export default router

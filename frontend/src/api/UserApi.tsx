@@ -85,7 +85,7 @@ export const useUpdateUser = () => {
       toast.success(res?.message || "User updated")
     },
     onError: (error) => {
-      toast.success(error?.message || "Error updating user")
+      toast.error(error?.message || "Error updating user")
     },
   })
 
@@ -126,6 +126,9 @@ export const useFetchCurrentUser = () => {
   } = useQuery<CurrentUserResponse, Error>({
     queryKey: ["fetchUser"],
     queryFn: fetchCurrentUserRequest,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    retry: false,
   })
 
   if (isError) {
