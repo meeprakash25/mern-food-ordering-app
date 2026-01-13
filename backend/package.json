@@ -2,7 +2,6 @@
   "name": "mern-food-ordering-app-backend",
   "version": "1.0.0",
   "main": "./src/index.ts",
-  "type": "module",
   "scripts": {
     "dev": "dotenv -e .env.local -- nodemon",
     "build": "npm install --include=dev && npx tsc",
