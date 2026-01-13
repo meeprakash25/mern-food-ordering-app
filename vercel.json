@@ -7,12 +7,28 @@
       "config": {
         "distDir": "dist"
       }
+    },
+    {
+      "src": "backend/src/index.ts",
+      "use": "@vercel/node"
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "/backend/src/index.ts"
+      "src": "/api/(.*)",
+      "dest": "/backend/src/index.ts"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/frontend/dist/assets/$1"
+    },
+    {
+      "src": "/vite.svg",
+      "dest": "/frontend/dist/vite.svg"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/dist/index.html"
     }
   ]
 }
