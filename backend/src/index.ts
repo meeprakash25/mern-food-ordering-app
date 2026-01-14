@@ -4,6 +4,7 @@ import "dotenv/config"
 import mongoose from "mongoose"
 import { errorHandler } from "./middleware/errorHandler"
 import UserRoute from "./routes/UserRoute"
+import UserRestaurantRoute from "./routes/UserRestaurantRoute"
 import RestaurantRoute from "./routes/RestaurantRoute"
 import path from "path"
 import { v2 as cloudinary } from "cloudinary"
@@ -28,7 +29,8 @@ app.use(
 )
 
 app.use("/api/user", UserRoute)
-app.use("/api/user/restaurant", RestaurantRoute)
+app.use("/api/user/restaurant", UserRestaurantRoute)
+app.use("/api/restaurant", RestaurantRoute)
 
 app.use(errorHandler)
 
