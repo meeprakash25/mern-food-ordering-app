@@ -1,6 +1,16 @@
 import { Request, Response } from "express"
 import Restaurant from "../models/Restaurant"
 
+const getCities = async (req: Request, res: Response) => {
+  try {
+    const cities = await Restaurant.distinct("city")
+    return res.status(200).json({ message: "Restaurants fetched successfully", data: cities })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ mesage: "Something went wrong" })
+  }
+}
+
 const searchRestaurant = async (req: Request, res: Response) => {
   try {
     const city = req.params.city as string
@@ -30,7 +40,7 @@ const searchRestaurant = async (req: Request, res: Response) => {
 
     if (selectedCuisines) {
       const cuisinesArray = selectedCuisines.split(",").map((cuisine) => new RegExp(cuisine, "i"))
-      query["cusines"] = { $all: cuisinesArray }
+      query["cuisines"] = { $all: cuisinesArray }
     }
 
     if (searchQuery) {
@@ -67,4 +77,5 @@ const searchRestaurant = async (req: Request, res: Response) => {
 
 export default {
   searchRestaurant,
+  getCities,
 }

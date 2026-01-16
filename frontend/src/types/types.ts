@@ -9,7 +9,7 @@ type User = {
 
 type MenuItem = { name: string; price: number }
 
-type Restaurant = {
+export type Restaurant = {
   _id: string
   restaurantName: string
   city: string
@@ -22,14 +22,32 @@ type Restaurant = {
   lastUpdated: string
 }
 
+type Cities = string[]
+
 export type ApiResponse = {
   message: string
   data: Object
 }
+
 
 export interface CurrentUserResponse extends ApiResponse {
   data: User
 }
 export interface UserRestaurantResponse extends ApiResponse {
   data: Restaurant
+}
+
+export interface RestaurantSearchResponse extends ApiResponse {
+  data: {
+    restaurants: Restaurant[],
+    pagination: {
+      total: number,
+      page: number,
+      pages:number
+    }
+  }
+}
+
+export interface CitiesResponse extends ApiResponse {
+  data: Cities
 }

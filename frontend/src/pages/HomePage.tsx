@@ -2,8 +2,13 @@ import landingImage from "../assets/landing.png"
 import appDownloadImage from "../assets/appDownload.png"
 import SearchBar, { type SearchForm } from "@/components/SearchBar"
 import { useNavigate } from "react-router-dom"
+import { useFetchCities } from "@/api/RestaurantApi"
+import CitiesBadge from "@/components/CitiesBadge"
 
 const HomePage = () => {
+
+  const {cities} = useFetchCities()
+
   const navigate = useNavigate()
   const handleSearchSubmit = (searchFormValues: SearchForm) => {
     navigate({
@@ -16,6 +21,7 @@ const HomePage = () => {
         <h1 className="text-5xl font-bold tracking-tight text-amber-600">Tuck into a takeaway today</h1>
         <span className="text-xl">Food is just a click away!</span>
         <SearchBar placeholder="Search by city or town" onSubmit={handleSearchSubmit} />
+        {cities?.data && <CitiesBadge cities={cities.data} />}
       </div>
       <div className="grid md:grid-cols-2 gap-5">
         <img src={landingImage} alt="LandingImage" />
