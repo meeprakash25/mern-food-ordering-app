@@ -8,7 +8,7 @@ import MenuSection from "./MenuSection"
 import ImageSection from "./ImageSection"
 import LoadingButton from "@/components/LoadingButton"
 import { Button } from "@/components/ui/button"
-import type { UserRestaurantResponse } from "@/types/types"
+import type { RestaurantResponse } from "@/types/types"
 import { useEffect } from "react"
 
 const formSchema = z
@@ -46,7 +46,7 @@ const formSchema = z
 export type RestaurantFormData = z.infer<typeof formSchema>
 
 type Props = {
-  restaurant?: UserRestaurantResponse
+  restaurant?: RestaurantResponse
   onSave: (RestaurantFormData: FormData) => void
   isLoading: boolean
 }
@@ -125,7 +125,14 @@ const ManageRestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
         <MenuSection />
         <Separator />
         <ImageSection />
-        {isLoading ? <LoadingButton /> : <Button type="submit">Submit</Button>}
+        <div className="w-full md:w-40">
+          {isLoading ?
+            <LoadingButton />
+          : <Button type="submit" className="bg-amber-600 hover:bg-amber-700 w-full">
+              Submit
+            </Button>
+          }
+        </div>
       </form>
     </FormProvider>
   )

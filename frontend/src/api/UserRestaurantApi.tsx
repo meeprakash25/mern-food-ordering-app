@@ -1,4 +1,4 @@
-import type { UserRestaurantResponse } from "@/types/types"
+import type { RestaurantResponse } from "@/types/types"
 import { useAuth0 } from "@auth0/auth0-react"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useEffect, useRef } from "react"
@@ -8,7 +8,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export const useGetUserRestaurant = () => {
   const { getAccessTokenSilently } = useAuth0()
-  const getUserRestaurantRequest = async (): Promise<UserRestaurantResponse> => {
+  const getUserRestaurantRequest = async (): Promise<RestaurantResponse> => {
     const accessToken = await getAccessTokenSilently()
     const response = await fetch(`${API_BASE_URL}/api/user/restaurant`, {
       method: "GET",
@@ -29,7 +29,7 @@ export const useGetUserRestaurant = () => {
     isError,
     error,
     isSuccess,
-  } = useQuery<UserRestaurantResponse, Error>({
+  } = useQuery<RestaurantResponse, Error>({
     queryKey: ["userRestaurant"],
     queryFn: getUserRestaurantRequest,
     refetchOnWindowFocus: false,
@@ -65,7 +65,7 @@ export const useGetUserRestaurant = () => {
 
 export const useCreateUserRestaurant = () => {
   const { getAccessTokenSilently } = useAuth0()
-  const createUserRestaurantRequest = async (restaurant: FormData): Promise<UserRestaurantResponse> => {
+  const createUserRestaurantRequest = async (restaurant: FormData): Promise<RestaurantResponse> => {
     const accessToken = await getAccessTokenSilently()
     const response = await fetch(`${API_BASE_URL}/api/user/restaurant`, {
       method: "POST",
@@ -82,7 +82,7 @@ export const useCreateUserRestaurant = () => {
     return await response.json()
   }
 
-  const { mutateAsync: createUserRestaurant, isPending } = useMutation<UserRestaurantResponse, Error, FormData>({
+  const { mutateAsync: createUserRestaurant, isPending } = useMutation<RestaurantResponse, Error, FormData>({
     mutationKey: ["createUserReataurant"],
     mutationFn: createUserRestaurantRequest,
     onSuccess: (data) => {
@@ -101,7 +101,7 @@ export const useCreateUserRestaurant = () => {
 
 export const useUpdateUserRestaurant = () => {
   const { getAccessTokenSilently } = useAuth0()
-  const updateUserRestaurantRequest = async (restaurant: FormData): Promise<UserRestaurantResponse> => {
+  const updateUserRestaurantRequest = async (restaurant: FormData): Promise<RestaurantResponse> => {
     const accessToken = await getAccessTokenSilently()
     const response = await fetch(`${API_BASE_URL}/api/user/restaurant`, {
       method: "PUT",
@@ -118,7 +118,7 @@ export const useUpdateUserRestaurant = () => {
     return await response.json()
   }
 
-  const { mutateAsync: updateUserRestaurant, isPending } = useMutation<UserRestaurantResponse, Error, FormData>({
+  const { mutateAsync: updateUserRestaurant, isPending } = useMutation<RestaurantResponse, Error, FormData>({
     mutationKey: ["updateUserReataurant"],
     mutationFn: updateUserRestaurantRequest,
     onSuccess: (data) => {

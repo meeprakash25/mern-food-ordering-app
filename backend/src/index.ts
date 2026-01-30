@@ -6,6 +6,7 @@ import { errorHandler } from "./middleware/errorHandler"
 import UserRoute from "./routes/UserRoute"
 import UserRestaurantRoute from "./routes/UserRestaurantRoute"
 import RestaurantRoute from "./routes/RestaurantRoute"
+import OrderRoute from "./routes/OrderRoute"
 import path from "path"
 import { v2 as cloudinary } from "cloudinary"
 
@@ -31,6 +32,7 @@ app.use(
 app.use("/api/user", UserRoute)
 app.use("/api/user/restaurant", UserRestaurantRoute)
 app.use("/api/restaurant", RestaurantRoute)
+app.use("/api/order", OrderRoute)
 
 app.use(errorHandler)
 

@@ -1,9 +1,42 @@
 import type { SearchStateType } from "@/pages/SearchPage"
-import type { CitiesResponse, RestaurantSearchResponse } from "@/types/types"
+import type { CitiesResponse, RestaurantResponse, RestaurantSearchResponse } from "@/types/types"
 import { useQuery } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+
+export const useGetRestaurant = (restaurantId?: string) => {
+  const getRestaurantByIdRequest = async (): Promise<RestaurantResponse> => {
+    const response = await fetch(`${API_BASE_URL}/api/restaurant/${restaurantId}`)
+
+    if (!response.ok) {
+      throw new Error("Failed to get restaurant")
+    }
+
+    return response.json()
+  }
+
+  const {
+    data: result,
+    isPending,
+    isError,
+    error,
+  } = useQuery<RestaurantResponse, Error>({
+    queryKey: ["fetchRestaurant"],
+    queryFn: getRestaurantByIdRequest,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    retry: false,
+    enabled: !!restaurantId,
+    staleTime: 5 * 60 * 1000,
+  })
+
+  if (isError) {
+    toast.error(error.message.toString())
+  }
+
+  return { result, isPending }
+}
 
 export const useSearchRestaurants = (searchState: SearchStateType, city?: string) => {
   // Sort cuisines to ensure consistent query keys and API params

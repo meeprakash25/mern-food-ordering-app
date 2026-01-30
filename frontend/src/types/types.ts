@@ -7,7 +7,7 @@ type User = {
   country: string
 }
 
-type MenuItem = { name: string; price: number }
+export type MenuItem = { _id: string; name: string; price: number }
 
 export type Restaurant = {
   _id: string
@@ -24,6 +24,10 @@ export type Restaurant = {
 
 type Cities = string[]
 
+type OrderSuccess = {
+  url: string
+}
+
 export type ApiResponse = {
   message: string
   data: Object
@@ -33,7 +37,7 @@ export type ApiResponse = {
 export interface CurrentUserResponse extends ApiResponse {
   data: User
 }
-export interface UserRestaurantResponse extends ApiResponse {
+export interface RestaurantResponse extends ApiResponse {
   data: Restaurant
 }
 
@@ -50,4 +54,8 @@ export interface RestaurantSearchResponse extends ApiResponse {
 
 export interface CitiesResponse extends ApiResponse {
   data: Cities
+}
+
+export interface OrderSuccessResponse extends ApiResponse {
+  data: OrderSuccess
 }

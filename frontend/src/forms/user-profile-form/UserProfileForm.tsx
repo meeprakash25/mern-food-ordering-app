@@ -16,16 +16,19 @@ const formSchema = z.object({
   country: z.string("Country is required").min(1, "Country is required"),
 })
 
-type UserFormData = z.infer<typeof formSchema>
+export type UserFormData = z.infer<typeof formSchema>
 
 type Props = {
   onSave: (userProfileData: UserFormData) => void
   isLoading: boolean
   currentUser: CurrentUserResponse
+  title?: string
+  description?: string
+  buttonText?: string
 }
 
-function UserProfileForm({ onSave, isLoading, currentUser }: Props) {
-  const form = useForm<UserFormData>({
+function UserProfileForm({ onSave, isLoading, currentUser, title = "User Profile", description="View and change your profile information here", buttonText = "Submit" }: Props) {
+const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: currentUser.data,
   })
@@ -38,8 +41,8 @@ function UserProfileForm({ onSave, isLoading, currentUser }: Props) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSave)} className="space-y-4 bg-gray-50 rounded-lg md:p-10">
         <div>
-          <h2 className="text-2xl font-bold">User Profile Form</h2>
-          <FormDescription>View and change your profile information here</FormDescription>
+          <h2 className="text-2xl font-bold">{title}</h2>
+          <FormDescription>{description}</FormDescription>
         </div>
         <FormField
           control={form.control}
@@ -112,13 +115,14 @@ function UserProfileForm({ onSave, isLoading, currentUser }: Props) {
             )}
           />
         </div>
-        {isLoading ? (
-          <LoadingButton />
-        ) : (
-          <Button type="submit" className="bg-amber-600 hover:bg-amber-700 active:bg-amber-700">
-            Submit
-          </Button>
-        )}
+        <div className="w-full md:w-40">
+          {isLoading ?
+            <LoadingButton />
+          : <Button type="submit" className="bg-amber-600 hover:bg-amber-700 active:bg-amber-700 w-full">
+              {buttonText}
+            </Button>
+          }
+        </div>
       </form>
     </Form>
   )

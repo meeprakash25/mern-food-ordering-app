@@ -1,7 +1,12 @@
-import mongoose from "mongoose"
+import mongoose, { InferSchemaType } from "mongoose"
 import User from "./User"
 
 const menuItemSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    default: () => new mongoose.Types.ObjectId(),
+  },
   name: {
     type: String,
     required: true,
@@ -11,6 +16,8 @@ const menuItemSchema = new mongoose.Schema({
     required: true,
   },
 })
+
+export type MenuItemType = InferSchemaType<typeof menuItemSchema>
 
 const restaurentSchema = new mongoose.Schema({
   user: {
