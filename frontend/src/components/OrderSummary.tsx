@@ -3,6 +3,7 @@ import type { Restaurant } from "@/types/types"
 import { CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Badge } from "./ui/badge"
 import { Separator } from "./ui/separator"
+import { Trash2 } from "lucide-react"
 
 type Props = {
   restaurant: Restaurant
