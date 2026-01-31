@@ -7,6 +7,7 @@ import UserRoute from "./routes/UserRoute"
 import UserRestaurantRoute from "./routes/UserRestaurantRoute"
 import RestaurantRoute from "./routes/RestaurantRoute"
 import OrderRoute from "./routes/OrderRoute"
+import OrderController from "./controllers/OrderController"
 import path from "path"
 import { v2 as cloudinary } from "cloudinary"
 
@@ -29,7 +30,12 @@ app.use(
   })
 )
 
-app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }))
+// Webhook must use raw body and run before express.json() so body isn't overwritten
+app.use(
+  "/api/order/checkout/webhook",
+  express.raw({ type: "application/json" }),
+  OrderController.stripeWebhookHandler
+)
 
 app.use(express.json())
 

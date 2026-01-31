@@ -131,10 +131,13 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
     event = STRIPE.webhooks.constructEvent(req.body, sig as string, STRIPE_WEBHOOK_SECRET)
   } catch (error: any) {
     console.log(error)
-    return res.status(400).json({ message: `Webhook error: ${error.message}` })
+    return res.status(500).json({ message: `Webhook error: ${error.message}` })
   }
 
-  // Type guards to ensure we have a Session object with metadata
+  if (!event?.data?.object) {
+    return res.status(400).json({ message: "Webhook payload missing data.object" })
+  }
+
   const session = event.data.object as Stripe.Checkout.Session
   const orderId = session.metadata && session.metadata.orderId ? session.metadata.orderId : undefined
 
@@ -151,7 +154,7 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
     if (!order) {
       return res.status(404).json({ message: "Order not found" })
     }
-    order.totalAmount = event.data.object.amount_total
+    order.totalAmount = session.amount_total
     order.paymentStatus = "paid"
 
     await order.save()
