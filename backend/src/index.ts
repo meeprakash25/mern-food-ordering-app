@@ -31,9 +31,9 @@ app.use(
 )
 
 // Webhook must use raw body and run before express.json() so body isn't overwritten
-app.use(
+app.post(
   "/api/order/checkout/webhook",
-  express.raw({ type: "application/json" }),
+  express.raw({ type: "*/*" }),
   OrderController.stripeWebhookHandler
 )
 
