@@ -21,7 +21,7 @@ mongoose
   .then(() => console.log("Connected to database:", process.env.MONGODB_CONNECTION_STRING))
 
 const app = express()
-app.use(express.json())
+
 // app.use(express.urlencoded({ extended: true }))
 app.use(
   cors({
@@ -29,10 +29,20 @@ app.use(
   })
 )
 
+app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }))
+
+app.use(express.json())
+
+// Health check endpoint
+app.get("/api/health", (_req: Request, res: Response) => {
+  return res.status(200).json({ status: "health ok!!!" })
+})
+
 app.use("/api/user", UserRoute)
 app.use("/api/user/restaurant", UserRestaurantRoute)
 app.use("/api/restaurant", RestaurantRoute)
 app.use("/api/order", OrderRoute)
+
 
 app.use(errorHandler)
 
@@ -41,11 +51,6 @@ app.use(express.static(path.join(__dirname, "../../frontend/dist")))
 
 app.use((_: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"))
-})
-
-// Health check endpoint
-app.get("/api/health", (_req: Request, res: Response) => {
-  return res.status(500).json({ status: "ok" })
 })
 
 // Export for serverless platforms (Vercel, Netlify, AWS Lambda)
