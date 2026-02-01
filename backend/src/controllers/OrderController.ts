@@ -126,6 +126,7 @@ const createSession = async (
 
 const stripeWebhookHandler = async (req: Request, res: Response) => {
   const rawBody = req.body
+  console.log(rawBody)
   if (!rawBody || (typeof rawBody !== "string" && !Buffer.isBuffer(rawBody))) {
     return res.status(400).json({ message: "Webhook requires raw body" })
   }
