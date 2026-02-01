@@ -40,6 +40,7 @@ const orderSchema = new mongoose.Schema(
       enum: ["paid", "unpaid", "stripeError", "rejected", "cancelled", "refunded"],
       default: "unpaid",
     },
+    stripePaymentIntent: String
   },
   {
     timestamps: true,

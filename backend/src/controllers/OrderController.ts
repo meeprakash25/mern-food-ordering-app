@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import Stripe from "stripe"
 import Restaurant, { MenuItemType } from "../models/Restaurant"
-import Order, { OrderType } from "../models/Order"
+import Order from "../models/Order"
 import mongoose from "mongoose"
 
 const STRIPE = new Stripe(process.env.STRIPE_SECRET_KEY as string)
@@ -163,12 +163,26 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
         Number((session.amount_total / 100).toFixed(2))
       : 0.00
     order.paymentStatus = "paid"
+    order.stripePaymentIntent = session.payment_intent as string
     await order.save()
     return res.status(200).json({ message: "Checkout session completed!!!" })
   }
 
   if (event.type === "refund.created") {
-    console.log("Amount refunded")
+    const paymentIntentId = event.data.object.payment_intent
+
+    if (!paymentIntentId) {
+      return res.status(400).json({ message: "Invalid payment intent" })
+    }
+    const order = await Order.findOneAndUpdate(
+      { stripePaymentIntent: paymentIntentId as string },
+      { paymentStatus: "refunded" },
+      { new: true },
+    )
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" })
+    }
+    return res.status(200).json({ message: "Amount refunded" })
   }
 
   return res.status(200).json({ message: "Webhook received" })
