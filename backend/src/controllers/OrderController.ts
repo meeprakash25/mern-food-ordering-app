@@ -125,41 +125,43 @@ const createSession = async (
 }
 
 const stripeWebhookHandler = async (req: Request, res: Response) => {
-  let event
+  const rawBody = req.body
+  if (!rawBody || (typeof rawBody !== "string" && !Buffer.isBuffer(rawBody))) {
+    return res.status(400).json({ message: "Webhook requires raw body" })
+  }
+
+  const sig = req.headers["stripe-signature"]
+  if (!sig) {
+    return res.status(400).json({ message: "Missing stripe-signature header" })
+  }
+
+  let event: Stripe.Event
   try {
-    const sig = req.headers["stripe-signature"]
-    event = STRIPE.webhooks.constructEvent(req.body, sig as string, STRIPE_WEBHOOK_SECRET)
+    event = STRIPE.webhooks.constructEvent(rawBody, sig, STRIPE_WEBHOOK_SECRET)
   } catch (error: any) {
-    console.log(error)
-    return res.status(500).json({ message: `Webhook error: ${error.message}` })
+    console.error("Webhook signature verification failed:", error.message)
+    return res.status(400).json({ message: `Webhook error: ${error.message}` })
   }
-
-  if (!event?.data?.object) {
-    return res.status(400).json({ message: "Webhook payload missing data.object" })
-  }
-
-  const session = event.data.object as Stripe.Checkout.Session
-  const orderId = session.metadata && session.metadata.orderId ? session.metadata.orderId : undefined
-
-  let order = undefined
-  if (orderId) {
-    order = await Order.findById(orderId)
-  }
-
-  // if (event.type === "checkout.session.completed") {
-
-  // }
 
   if (event.type === "checkout.session.completed") {
+    const session = event.data?.object as Stripe.Checkout.Session | undefined
+    if (!session) {
+      return res.status(400).json({ message: "Webhook payload missing data.object" })
+    }
+    const orderId = session.metadata?.orderId
+    if (!orderId) {
+      return res.status(400).json({ message: "Checkout session missing orderId in metadata" })
+    }
+    const order = await Order.findById(orderId)
     if (!order) {
       return res.status(404).json({ message: "Order not found" })
     }
-    order.totalAmount = session.amount_total
+    order.totalAmount = session.amount_total ?? 0
     order.paymentStatus = "paid"
-
     await order.save()
   }
-  return res.status(200).json({ message: `Webhook success` })
+
+  return res.status(200).json({ message: "Webhook received" })
 }
 
 
