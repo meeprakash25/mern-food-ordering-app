@@ -144,22 +144,24 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
     return res.status(400).json({ message: `Webhook error: ${error.message}` })
   }
 
+  const session = event.data?.object as Stripe.Checkout.Session | undefined
+  if (!session) {
+    return res.status(400).json({ message: "Webhook payload missing data.object" })
+  }
+  const orderId = session.metadata?.orderId
+  if (!orderId) {
+    return res.status(400).json({ message: "Checkout session missing orderId in metadata" })
+  }
+  
   if (event.type === "checkout.session.completed") {
-    const session = event.data?.object as Stripe.Checkout.Session | undefined
-    if (!session) {
-      return res.status(400).json({ message: "Webhook payload missing data.object" })
-    }
-    const orderId = session.metadata?.orderId
-    if (!orderId) {
-      return res.status(400).json({ message: "Checkout session missing orderId in metadata" })
-    }
     const order = await Order.findById(orderId)
     if (!order) {
       return res.status(404).json({ message: "Order not found" })
     }
-    order.totalAmount = session.amount_total !== null && session.amount_total !== undefined
-      ? session.amount_total / 100
-      : 0
+    order.totalAmount =
+      session.amount_total !== null && session.amount_total !== undefined ?
+        Number((session.amount_total / 100).toFixed(2))
+      : 0.00
     order.paymentStatus = "paid"
     await order.save()
     return res.status(200).json({ message: "Checkout session completed!!!" })
