@@ -165,6 +165,10 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "Checkout session completed!!!" })
   }
 
+  if (event.type === "refund.created") {
+    console.log("Amount refunded")
+  }
+
   return res.status(200).json({ message: "Webhook received" })
 }
 
