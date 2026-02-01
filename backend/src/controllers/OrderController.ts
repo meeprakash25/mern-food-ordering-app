@@ -156,9 +156,12 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
     if (!order) {
       return res.status(404).json({ message: "Order not found" })
     }
-    order.totalAmount = session.amount_total ?? 0
+    order.totalAmount = session.amount_total !== null && session.amount_total !== undefined
+      ? session.amount_total / 100
+      : 0
     order.paymentStatus = "paid"
     await order.save()
+    return res.status(200).json({ message: "Checkout session completed!!!" })
   }
 
   return res.status(200).json({ message: "Webhook received" })
