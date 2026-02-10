@@ -1,6 +1,6 @@
-import type { OrderSuccessResponse } from "@/types/types"
-import { useAuth0 } from "@auth0/auth0-react"
-import { useMutation } from "@tanstack/react-query"
+import type { OrderSessionSuccessResponse, OrderResponse } from "@/types/types"
+import { useAuth0Token, CONSENT_REDIRECT } from "@/auth/useAuth0Token"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
@@ -22,10 +22,10 @@ type CheckoutSessionRequest = {
 }
 
 export const useCreateCheckoutSession = () => {
-  const { getAccessTokenSilently } = useAuth0()
+  const getToken = useAuth0Token()
 
-  const createCheckoutSessionRequest = async (checkoutSessionRequest: CheckoutSessionRequest):Promise<OrderSuccessResponse> => {
-    const accessToken = await getAccessTokenSilently()
+  const createCheckoutSessionRequest = async (checkoutSessionRequest: CheckoutSessionRequest):Promise<OrderSessionSuccessResponse> => {
+    const accessToken = await getToken()
     const response = await fetch(`${API_BASE_URL}/api/order/checkout/create-checkout-session`, {
       method: "POST",
       headers: {
@@ -47,13 +47,14 @@ export const useCreateCheckoutSession = () => {
     error,
     isError,
     reset,
-  } = useMutation<OrderSuccessResponse, Error, CheckoutSessionRequest>({
+  } = useMutation<OrderSessionSuccessResponse, Error, CheckoutSessionRequest>({
     mutationKey: ["createCheckoutSession"],
     mutationFn: createCheckoutSessionRequest,
     onSuccess: (res) => {
       toast.success(res?.message || "Order placed successfully")
     },
     onError: (error) => {
+      if (error?.message === CONSENT_REDIRECT) return
       toast.error(error?.message || "Error placing the order")
     },
   })
@@ -65,5 +66,44 @@ export const useCreateCheckoutSession = () => {
     isError,
     error,
     reset
+  }
+}
+
+export const useGetMyOrders = () => {
+  const getToken = useAuth0Token()
+  const getMyOrdersRequest = async ():Promise<OrderResponse> => {
+    const accessToken = await getToken()
+    const response = await fetch(`${API_BASE_URL}/api/order`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    if (!response.ok) {
+      throw new Error("Failed to get orders")
+    }
+    return response.json()
+  }
+
+  const {
+    data: result,
+    isPending,
+    isError,
+    error,
+  } = useQuery<OrderResponse, Error>({
+    queryKey: ["getMyOrders"],
+    queryFn: getMyOrdersRequest,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    retry: false,
+    refetchInterval: 5 * 1000, // refetch every 5 seconds
+  })
+
+  if (isError && error?.message !== CONSENT_REDIRECT) {
+    toast.error(error.message.toString())
+  }
+
+  return {
+    result,
+    isPending,
   }
 }

@@ -117,7 +117,7 @@ const ManageRestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 bg-gray-50 rounded-lg p-2 md:p-10">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <DetailsSection />
         <Separator />
         <Cuisines />

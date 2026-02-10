@@ -1,5 +1,5 @@
 import type { ApiResponse, CurrentUserResponse } from "@/types/types"
-import { useAuth0 } from "@auth0/auth0-react"
+import { useAuth0Token, CONSENT_REDIRECT } from "@/auth/useAuth0Token"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { toast } from "sonner"
 
@@ -11,9 +11,9 @@ type CreateUserRequest = {
 }
 
 export const useCreateUser = () => {
-  const { getAccessTokenSilently } = useAuth0()
+  const getToken = useAuth0Token()
   const createUserRequest = async (user: CreateUserRequest): Promise<ApiResponse> => {
-    const accessToken = await getAccessTokenSilently()
+    const accessToken = await getToken()
     const response = await fetch(`${API_BASE_URL}/api/user`, {
       method: "POST",
       headers: {
@@ -54,9 +54,9 @@ type UpdateUserRequest = {
 }
 
 export const useUpdateUser = () => {
-  const { getAccessTokenSilently } = useAuth0()
+  const getToken = useAuth0Token()
   const updateUserRequest = async (formData: UpdateUserRequest): Promise<ApiResponse> => {
-    const accessToken = await getAccessTokenSilently()
+    const accessToken = await getToken()
     const response = await fetch(`${API_BASE_URL}/api/user/update`, {
       method: "PUT",
       headers: {
@@ -85,6 +85,7 @@ export const useUpdateUser = () => {
       toast.success(res?.message || "User updated")
     },
     onError: (error) => {
+      if (error?.message === CONSENT_REDIRECT) return
       toast.error(error?.message || "Error updating user")
     },
   })
@@ -102,9 +103,9 @@ export const useUpdateUser = () => {
 
 
 export const useFetchCurrentUser = () => {
-  const { getAccessTokenSilently } = useAuth0()
+  const getToken = useAuth0Token()
   const fetchCurrentUserRequest = async (): Promise<CurrentUserResponse> => {
-    const accessToken = await getAccessTokenSilently()
+    const accessToken = await getToken()
     const response = await fetch(`${API_BASE_URL}/api/user/fetch`, {
       method: "GET",
       headers: {
@@ -131,7 +132,7 @@ export const useFetchCurrentUser = () => {
     retry: false,
   })
 
-  if (isError) {
+  if (isError && error?.message !== CONSENT_REDIRECT) {
     toast.error(error.message.toString())
   }
 
