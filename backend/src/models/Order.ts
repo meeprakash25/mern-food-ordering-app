@@ -27,7 +27,7 @@ const orderSchema = new mongoose.Schema(
     totalAmount: Number,
     orderStatus: {
       type: String,
-      enum: ["orderPlaced", "inProgress", "outForDelivery", "delivered"],
+      enum: ["orderPlaced", "inProgress", "outForDelivery", "delivered","cancelled"],
       default: "orderPlaced",
     },
     paymentType: {
@@ -37,7 +37,7 @@ const orderSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ["paid", "unpaid", "stripeError", "rejected", "cancelled", "refunded"],
+      enum: ["paid", "unpaid", "stripeError", "rejected", "refunded"],
       default: "unpaid",
     },
     stripePaymentIntent: String

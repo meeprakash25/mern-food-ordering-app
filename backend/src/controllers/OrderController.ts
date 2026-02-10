@@ -158,10 +158,7 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
     if (!order) {
       return res.status(404).json({ message: "Order not found" })
     }
-    order.totalAmount =
-      session.amount_total !== null && session.amount_total !== undefined ?
-        Number((session.amount_total / 100).toFixed(2))
-      : 0.00
+    order.totalAmount = session.amount_total ? Number((session.amount_total / 100).toFixed(2)) : 0.0
     order.paymentStatus = "paid"
     order.stripePaymentIntent = session.payment_intent as string
     await order.save()
@@ -188,8 +185,22 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
   return res.status(200).json({ message: "Webhook received" })
 }
 
+const getMyOrders = async (req: Request, res: Response) => {
+  try {
+    const orders = await Order.find({ user: req.userId })
+      .sort({ createdAt: -1 })
+      .populate("restaurant")
+      .populate("user")
+    return res.status(200).json({ message: "Orders fetched successfully", data: orders })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: "Something went wrong" })
+  }
+}
+
 
 export default {
   createCheckoutSession,
   stripeWebhookHandler,
+  getMyOrders,
 }

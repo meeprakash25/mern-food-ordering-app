@@ -15,8 +15,11 @@ const upload = multer({
 })
 
 router.get("/", auth, UserRestaurantController.getUserRestaurant)
+router.get("/order", auth, UserRestaurantController.getUserRestaurantOrders)
+router.patch("/order/:orderId/status", auth, UserRestaurantController.updateOrderStatus)
 
 router.post("/", auth, upload.single("imageFile"), validateRestaurantRequest, UserRestaurantController.createRestaurant)
 router.put("/", auth, upload.single("imageFile"), validateRestaurantRequest, UserRestaurantController.updateRestaurant)
+
 
 export default router

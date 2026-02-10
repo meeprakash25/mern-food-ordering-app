@@ -9,4 +9,6 @@ router.post("/checkout/create-checkout-session",
   OrderController.createCheckoutSession
 )
 
+router.get("/", auth, OrderController.getMyOrders)
+
 export default router
